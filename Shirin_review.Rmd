@@ -1,0 +1,74 @@
+---
+title: "Shirin_review"
+author: "Shirin Parvin"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+
+## R Assignment peer review
+
+Hi Vaishnavey,
+
+Great job attempting the assignment!
+Here are some of my suggestions by which you can improve your assignment.
+
+
+The instruction was to run all parts of your code seemlessly when we click the run all command on the .Rmd file you had provided. Unfortunately, that did not happen since you had not included the `fang_et_a;_genotypes.txt` , `snp_positions.txt`, and `transposed_genotypes.txt` files in your repository. I tried solving the issue by copying the `fang_et_a;_genotypes.txt` and `snp_positions.txt` files from my computer into your cloned repository on my local machine. It did solved the issues in the first few lines of the code. But the problem persisted since I do not have the `transposed_genotypes.txt` file. I do not know how you created that file, neither your code reflect it. So the "Run All" failed and I could not progress beyond the first line of code in the `Data Processing` part. It would be great if you could include those files into your repository and then double check your .Rmd file can run the code seemlessly.
+
+Also, it is good practise to have all the codes of the .Rmd file to be present in the converted PDF file. I had to go back and forth between the Rmd file and the PDF to look for missing or hidden code. 
+
+
+My review is based on the pdf file included in the repository. My comments are listed as below:
+
+
+### Data Inspection
+
+1. Indexing in R starts at 1. In the following line of code, you started the indexing at 0. This only removes "Sample_ID". Making your remainder of the dataframe and your code not follow along.
+
+```{r}
+new_fang<-fang_t[-c(0,1),]  # Please doublecheck this indexing.
+```
+
+I like how you cleverly converted the row values into column names. This was smart! This actually helped you in Task 2 in the Data Visualization part !! I learned this trick from you and will apply in my assignment. Thank you!!
+
+
+
+### Data Processing
+
+2. In your code given below, you have found the column number for the Maize groups for manual selection. Instead of manually selecting the columns for building the **Maize** dataset, it might be better to use `select()` to find the data relevant to the groups that match for Maize.
+
+```{r, include=FALSE}
+# allcols<-colnames(final)
+# grep("ZMMIL",allcols)
+# grep("ZMMLR",allcols)
+# grep("ZMMMR",allcols)
+
+```
+
+```{r}
+# maize<-final[c(1,2,3,1213:2468, 2469:2495, 2496:2785)]
+# maize<-as.data.frame(maize)
+```
+
+
+
+
+3. From your workflow, it seems like you first split the dataframes by chromosome, then used `lapply()` to first order them using `order()` and then used `lapply()` again to write out the files. 
+Instead it might be better to order the big datasets first, by using pipe operator ` %>% `. Such as using `group_by()` Chromosome, then use `order()`. After that just use `lapply()` once to write out the files. I think this is less memory intensive.
+
+
+
+### Data Visualization
+
+
+4. I think the plot generated using your code for Task 1, is incorrect (I might be wrong!) and suffered of how you processed your file. As given in the hints, you might have needed to convert the datasets using `pivot_longer()` first to count the actual number of SNPs. 
+
+Your workflow was to group them by Chromosomes and then count the instances of SNP_ID. In the data processing parts, we joined using the SNP ID,the number of rows (reflected by the SNP_ID) should be same for both Maize and Teosinte. So, the instances of SNP_ID you will count will be the same for both of them. Instead if you used `pivot_longer()` and then counted the instances of non-missing values in the genotype using `aggregate()`, you would have landed on the correct number of SNPs for both the cases.
+
+
+
+5. For task 2, in your code, there are some repeated lines. It might be better to remove the repeated lines. Also, the "SNPs across sample" plot code might be incorrect since it does not have the "position adjustment" part mentioned in the hint, but the plot definitely looks like it used the position adjustment parameter.
+
+
+6. I liked your visualiton for Task 3: Own visualization! Awesome! :D
